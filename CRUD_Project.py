@@ -38,27 +38,19 @@ class NutritionDB:
         ''', (date, weight, protein, fat, carbs, workout_type))
         self.conn.commit()
 
-    def delete_entry(self, date):
+    def delete_record(self, date):
         self.cursor.execute('''
             DELETE FROM nutrition_log WHERE date=?
         ''', (date,))
         self.conn.commit()
-
-    def fetch_all(self):
-        self.cursor.execute('''
-            SELECT * FROM nutrition_log ORDER BY date DESC
-        ''')
-        return self.cursor.fetchall()
 
     def search_by_date(self, date):
         self.cursor.execute("SELECT * FROM nutrition_log WHERE date=?", (date,))
         return self.cursor.fetchall()
 
     def get_all_records(self):
-        self.cursor.execute("SELECT * FROM nutrition_log ORDER BY date")
+        self.cursor.execute("SELECT * FROM nutrition_log ORDER BY date DESC")
         return self.cursor.fetchall()
-
-
 
 class NutritionApp:
     def __init__(self, root):
@@ -137,7 +129,7 @@ class NutritionApp:
 
         self.tree.bind("<ButtonRelease-1>", self.load_selected_record)
 
-        #第四块，“添加 / 更新 / 删除 / 清空”按钮，以及对应函数
+        #第四块，“添加 / 更新 / 删除 / 清空”按钮
         self.add_button = tk.Button(self.root, text="Add", command=self.add_record)
         self.add_button.place(x=60, y=500)
 
@@ -234,7 +226,7 @@ class NutritionApp:
         self.db.delete_record(date)
         self.show_all()
         self.clear_inputs()
-
+# 这里不工作！！
 
     def clear_inputs(self):
         self.date_entry.delete(0, tk.END)
